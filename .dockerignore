@@ -1,0 +1,11 @@
+node_modules
+.turbo
+.git
+.next
+dist
+coverage
+*.log
+apps/*/node_modules
+apps/*/.next
+apps/*/dist
+packages/*/node_modules
