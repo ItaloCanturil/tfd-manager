@@ -18,6 +18,12 @@ export const bookingStatus = pgEnum("booking_status", [
   "CANCELED",
 ]);
 
+export const userRole = pgEnum("user_role", [
+  "COORDINATOR",
+  "RECEPTIONIST",
+  "TRANSPORT",
+]);
+
 const timestamps = {
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
@@ -75,6 +81,7 @@ export const bookings = pgTable(
     tripId: uuid("trip_id")
       .notNull()
       .references(() => trips.id, { onDelete: "restrict" }),
+    finalDestination: text("final_destination").notNull(),
     appointmentDate: date("appointment_date").notNull(),
     hasCompanion: boolean("has_companion").notNull().default(false),
     companionName: text("companion_name"),
@@ -88,3 +95,13 @@ export const bookings = pgTable(
     index("bookings_trip_status_idx").on(table.tripId, table.status),
   ],
 );
+
+export const users = pgTable("users", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
+  role: userRole("role").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+  ...timestamps,
+});

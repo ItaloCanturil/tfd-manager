@@ -53,14 +53,23 @@ O sistema cobre o controle administrativo do TFD, desde a solicitação de vaga 
 
 ---
 
-## 6. Perfis de Usuário
+## 6. Perfis e Usuários
 
-O sistema possui dois perfis, ambos com acesso completo a todas as funcionalidades operacionais. A distinção é de contexto de uso, não de restrição de permissão.
+O sistema deve possuir autenticação por usuário e autorização por cargo. Cada usuário pertence a um único perfil, e as permissões determinam quais ações podem ser executadas no sistema.
 
-| Perfil                        | Foco de uso                                                                                          |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------- |
-| **Recepcionista / Atendente** | Operação diária: cadastro de pacientes, reserva de vagas, registro de ausências, anexo de documentos |
-| **Gestor**                    | Visão gerencial: relatórios, histórico, configuração de rotas e viagens, cancelamentos               |
+| Perfil            | Permissões                                                                 |
+| ----------------- | -------------------------------------------------------------------------- |
+| **Coordenador**   | Visualiza tudo, edita tudo e cria outros usuários                          |
+| **Recepcionista** | Visualiza, cria e edita pacientes; cria reservas de viagens                |
+| **Transporte**    | Visualiza as informações necessárias para operação e impressão das viagens |
+
+Regras de acesso:
+
+- Todos os usuários devem se autenticar para acessar o sistema, exceto endpoints técnicos públicos, como verificação de saúde.
+- Apenas o Coordenador pode criar, editar, ativar ou desativar usuários.
+- O Coordenador possui permissão total sobre cadastros, rotas, viagens, reservas, relatórios e usuários.
+- A Recepcionista pode consultar informações operacionais, manter o cadastro de pacientes e criar/atualizar reservas de viagem.
+- O perfil Transporte é somente leitura, voltado à consulta das listas e informações necessárias para a execução das viagens.
 
 ---
 
@@ -176,7 +185,7 @@ O sistema deve manter o histórico completo de cada paciente, incluindo: datas d
 | Lista de pacientes por viagem (com acompanhantes) | PDF para impressão | Setor de transporte    |
 | Histórico de viagens por paciente                 | Tela do sistema    | Recepcionista / Gestor |
 
-> O setor de transporte **não acessa o sistema diretamente**. Recebe apenas o PDF impresso gerado pela recepcionista.
+> O setor de transporte acessa o sistema somente como visualizador.
 
 ---
 
@@ -250,6 +259,6 @@ sist-tfd/
 | 5   | Regras de negócio       | Adicionado fluxo de cancelamento de viagem pelo gestor                                    |
 | 6   | Prioridade              | Esclarecido que prioridade não altera alocação — serve apenas para direito a acompanhante |
 | 7   | Acompanhante            | Incluída validação automática por data de nascimento (menor de 18 / maior de 60)          |
-| 8   | Perfis de usuário       | Documentados dois perfis (Gestor e Recepcionista) com acesso total                        |
-| 9   | Saídas do sistema       | Especificado formato PDF para impressão; setor de transporte não acessa o sistema         |
+| 8   | Perfis e usuários       | Adicionada autenticação e autorização por três cargos: Coordenador, Recepcionista e Transporte |
+| 9   | Saídas do sistema       | Especificado formato PDF para impressão; setor de transporte acessa o sistema como visualizador |
 | 10  | Estrutura de diretórios | Adicionado módulo `routes/` e `bookings/` que estavam ausentes                            |

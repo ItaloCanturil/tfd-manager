@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import type { CreateTripDto } from "./dto/create-trip.dto";
 import type { ListTripsDto } from "./dto/list-trips.dto";
 import { TripEntity } from "./domain/trip.entity";
@@ -7,7 +7,10 @@ import { TripsRepository } from "./trips.repository";
 
 @Injectable()
 export class TripsService {
-  constructor(private readonly tripsRepository: TripsRepository) {}
+  constructor(
+    @Inject(TripsRepository)
+    private readonly tripsRepository: TripsRepository,
+  ) {}
 
   async create(data: CreateTripDto): Promise<Trip> {
     const route = await this.tripsRepository.findRouteById(data.routeId);
@@ -58,4 +61,3 @@ export class TripsService {
     return this.update(id, { status: "CANCELED" });
   }
 }
-

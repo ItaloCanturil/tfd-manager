@@ -1,30 +1,38 @@
-import { InvalidRouteDepartureDateError } from "./routes.errors";
+import {
+  InvalidRouteCapacityError,
+  InvalidRouteDestinationError,
+  InvalidRouteWeekdaysError,
+} from "./routes.errors";
 
 export type RouteProps = {
   id?: string;
-  name: string;
-  notes?: string;
   destination: string;
   defaultCapacity: number;
-  fixedWeekDays: string[];
+  fixedWeekdays: number[];
 };
 
 export class RouteEntity {
   private constructor(private readonly props: RequiredRouteProps) {}
 
   static create(props: RouteProps): RouteEntity {
-    if (!props.departureDate) {
-      throw new InvalidRouteDepartureDateError();
+    const destination = props.destination?.trim();
+
+    if (!destination) {
+      throw new InvalidRouteDestinationError();
     }
 
-    const name =
-      props.name?.trim() || formatRouteDefaultName(props.departureDate);
+    if (props.defaultCapacity <= 0) {
+      throw new InvalidRouteCapacityError();
+    }
+
+    if (!areValidWeekdays(props.fixedWeekdays)) {
+      throw new InvalidRouteWeekdaysError();
+    }
 
     return new RouteEntity({
       ...props,
-      name,
-      notes: props.notes ?? null,
-      status: props.status ?? "ACTIVE",
+      destination,
+      fixedWeekdays: [...new Set(props.fixedWeekdays)].sort((a, b) => a - b),
     });
   }
 
@@ -33,23 +41,13 @@ export class RouteEntity {
   }
 }
 
-type RequiredRouteProps = Omit<RouteProps, "name" | "notes" | "status"> & {
-  name: string;
-  notes: string | null;
-  status: "ACTIVE" | "CANCELED";
-};
+type RequiredRouteProps = RouteProps;
 
-function formatRouteDefaultName(departureDate: string): string {
-  const date = new Date(`${departureDate}T00:00:00`);
-  const formattedDate = new Intl.DateTimeFormat("pt-BR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(date);
-
-  return formattedDate.replace(
-    / de ([a-z])/,
-    (_, firstLetter: string) => ` de ${firstLetter.toUpperCase()}`,
+function areValidWeekdays(weekdays: number[]): boolean {
+  return (
+    weekdays.length > 0 &&
+    weekdays.every(
+      (weekday) => Number.isInteger(weekday) && weekday >= 0 && weekday <= 6,
+    )
   );
 }

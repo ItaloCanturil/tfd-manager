@@ -15,4 +15,3 @@ export type UpdateTrip = Partial<
 export type Route = typeof routes.$inferSelect;
 
 export type RouteID = Route["id"];
-

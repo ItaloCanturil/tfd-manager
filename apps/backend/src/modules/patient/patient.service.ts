@@ -1,16 +1,21 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
 import type { CreatePatientDto } from "./dto/create-patient.dto";
 import type { UpdatePatientDto } from "./dto/update-patient.dto";
+import { PatientEntity } from "./domain/patient.entity";
 import { PatientsRepository } from "./patient.repository";
 import type { Patient, PatientID } from "./patient.type";
 
 @Injectable()
 export class PatientService {
-  constructor(private readonly patientsRepository: PatientsRepository) {}
+  constructor(
+    @Inject(PatientsRepository)
+    private readonly patientsRepository: PatientsRepository,
+  ) {}
 
   async create(data: CreatePatientDto): Promise<Patient> {
     const patientWithCpf = await this.patientsRepository.findByCpf(data.cpf);
@@ -27,7 +32,10 @@ export class PatientService {
       throw new ConflictException("SUS card already registered");
     }
 
-    const patient = await this.patientsRepository.create(data);
+    const patientEntity = PatientEntity.create(data);
+    const patient = await this.patientsRepository.create(
+      patientEntity.toObject(),
+    );
 
     if (!patient) {
       throw new Error("Patient could not be created");
