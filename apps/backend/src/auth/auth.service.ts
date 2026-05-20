@@ -18,8 +18,8 @@ export class AuthService {
     private readonly config: ConfigService,
   ) {}
 
-  async login(email: string, password: string) {
-    const user = await this.usersService.findByEmail(email);
+  async login(username: string, password: string) {
+    const user = await this.usersService.findByUsername(username);
 
     if (
       !user ||
@@ -31,9 +31,9 @@ export class AuthService {
 
     const authenticatedUser: AuthenticatedUser = {
       id: user.id,
-      email: user.email,
       name: user.name,
       role: user.role,
+      username: user.username,
     };
 
     return {
@@ -49,9 +49,9 @@ export class AuthService {
   private signToken(user: AuthenticatedUser): Promise<string> {
     const payload: JwtPayload = {
       sub: user.id,
-      email: user.email,
       name: user.name,
       role: user.role,
+      username: user.username,
     };
 
     return this.jwtService.signAsync(payload, {

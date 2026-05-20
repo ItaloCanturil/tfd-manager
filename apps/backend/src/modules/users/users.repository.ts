@@ -15,9 +15,9 @@ export class UsersRepository {
     return result?.count ?? 0;
   }
 
-  async findByEmail(email: string): Promise<User | undefined> {
+  async findByUsername(username: string): Promise<User | undefined> {
     return this.db.query.users.findFirst({
-      where: eq(users.email, email.toLowerCase()),
+      where: eq(users.username, username.toLowerCase()),
     });
   }
 

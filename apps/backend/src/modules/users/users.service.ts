@@ -18,17 +18,19 @@ export class UsersService {
   ) {}
 
   async create(dto: CreateUserDto): Promise<PublicUser> {
-    const existingUser = await this.usersRepository.findByEmail(dto.email);
+    const existingUser = await this.usersRepository.findByUsername(
+      dto.username,
+    );
 
     if (existingUser) {
-      throw new ConflictException("User email already exists");
+      throw new ConflictException("Username already exists");
     }
 
     const user = await this.usersRepository.create({
       name: dto.name,
-      email: dto.email.toLowerCase(),
       passwordHash: await hashPassword(dto.password),
       role: dto.role,
+      username: dto.username.toLowerCase(),
     });
 
     if (!user) {
@@ -56,17 +58,17 @@ export class UsersService {
     return users.map((user) => this.toPublicUser(user));
   }
 
-  async findByEmail(email: string): Promise<User | undefined> {
-    return this.usersRepository.findByEmail(email);
+  async findByUsername(username: string): Promise<User | undefined> {
+    return this.usersRepository.findByUsername(username);
   }
 
   async update(id: UserID, dto: UpdateUserDto): Promise<PublicUser> {
     const user = await this.usersRepository.update(id, {
       name: dto.name,
-      email: dto.email?.toLowerCase(),
       passwordHash: dto.password ? await hashPassword(dto.password) : undefined,
       role: dto.role,
       isActive: dto.isActive,
+      username: dto.username?.toLowerCase(),
     });
 
     if (!user) {
