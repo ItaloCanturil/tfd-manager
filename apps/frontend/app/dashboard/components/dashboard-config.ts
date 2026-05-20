@@ -1,4 +1,10 @@
-import type { Route, RouteSchedule, Trip, UserRole } from "../../lib/tfd-api";
+import type {
+  Booking,
+  Route,
+  RouteSchedule,
+  Trip,
+  UserRole,
+} from "../../lib/tfd-api";
 
 export const roleLabels: Record<UserRole, string> = {
   COORDINATOR: "Coordenador",
@@ -55,6 +61,11 @@ export type DashboardTrip = Pick<
   | "routeId"
   | "routeScheduleId"
   | "status"
+>;
+
+export type DashboardBooking = Pick<
+  Booking,
+  "appointmentDate" | "finalDestination"
 >;
 
 export type DashboardRoute = Pick<Route, "destination" | "id">;

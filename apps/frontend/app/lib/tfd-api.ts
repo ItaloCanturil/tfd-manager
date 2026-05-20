@@ -204,6 +204,20 @@ export async function listBookingsByPatient(token: string, patientId: string) {
   return readJson<Booking[]>(response);
 }
 
+export async function listBookingsByAppointment(
+  token: string,
+  appointmentDate: string,
+) {
+  const params = new URLSearchParams({ appointmentDate });
+  const response = await fetch(`${apiUrl}/bookings?${params.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return readJson<Booking[]>(response);
+}
+
 export async function createBooking(
   token: string,
   booking: CreateBookingInput,

@@ -8,6 +8,8 @@ export type BookingID = Booking["id"];
 
 export type BookingStatus = Booking["status"];
 
+export type AppointmentDate = Booking["appointmentDate"];
+
 export type UpdateBooking = Partial<
   Omit<NewBooking, "id" | "patientId" | "tripId" | "createdAt" | "updatedAt">
 >;
