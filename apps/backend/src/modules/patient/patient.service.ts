@@ -48,6 +48,10 @@ export class PatientService {
     return this.patientsRepository.findByCpf(cpf);
   }
 
+  list(): Promise<Patient[]> {
+    return this.patientsRepository.list();
+  }
+
   findByName(name: string): Promise<Patient[] | undefined> {
     return this.patientsRepository.findByName(name);
   }

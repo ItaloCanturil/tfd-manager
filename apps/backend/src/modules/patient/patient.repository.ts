@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { DATABASE } from "../../db/db.constants";
 import type { Database } from "../../db/db.type";
 import { patients } from "../../db/schema";
@@ -29,6 +29,12 @@ export class PatientsRepository {
   async findBySusCard(sus: string): Promise<Patient | undefined> {
     return this.db.query.patients.findFirst({
       where: eq(patients.susCard, sus),
+    });
+  }
+
+  async list(): Promise<Patient[]> {
+    return this.db.query.patients.findMany({
+      orderBy: asc(patients.name),
     });
   }
 
