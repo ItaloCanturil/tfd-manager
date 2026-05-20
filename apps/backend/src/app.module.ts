@@ -12,7 +12,9 @@ import { TripsModule } from "./modules/trips/trips.module";
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.env.${process.env.NODE_ENV}`,
+      envFilePath: process.env.NODE_ENV
+        ? [`.env.${process.env.NODE_ENV}`, ".env"]
+        : [".env"],
       isGlobal: true,
     }),
     DbModule,
