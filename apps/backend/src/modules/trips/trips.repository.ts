@@ -2,9 +2,18 @@ import { Inject, Injectable } from "@nestjs/common";
 import { and, eq } from "drizzle-orm";
 import { DATABASE } from "../../db/db.constants";
 import type { Database } from "../../db/db.type";
-import { routes, trips } from "../../db/schema";
+import { routeSchedules, routes, trips } from "../../db/schema";
 import type { ListTripsDto } from "./dto/list-trips.dto";
-import type { NewTrip, Route, RouteID, Trip, TripID, UpdateTrip } from "./trip.type";
+import type {
+  NewTrip,
+  Route,
+  RouteID,
+  RouteSchedule,
+  RouteScheduleID,
+  Trip,
+  TripID,
+  UpdateTrip,
+} from "./trip.type";
 
 @Injectable()
 export class TripsRepository {
@@ -13,6 +22,14 @@ export class TripsRepository {
   async findRouteById(id: RouteID): Promise<Route | undefined> {
     return this.db.query.routes.findFirst({
       where: eq(routes.id, id),
+    });
+  }
+
+  async findRouteScheduleById(
+    id: RouteScheduleID,
+  ): Promise<RouteSchedule | undefined> {
+    return this.db.query.routeSchedules.findFirst({
+      where: eq(routeSchedules.id, id),
     });
   }
 
@@ -26,6 +43,9 @@ export class TripsRepository {
     const conditions = [
       filters.date ? eq(trips.departureDate, filters.date) : undefined,
       filters.routeId ? eq(trips.routeId, filters.routeId) : undefined,
+      filters.routeScheduleId
+        ? eq(trips.routeScheduleId, filters.routeScheduleId)
+        : undefined,
       filters.status ? eq(trips.status, filters.status) : undefined,
     ].filter((condition) => condition !== undefined);
 

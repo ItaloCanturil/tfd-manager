@@ -1,4 +1,4 @@
-import type { routes, trips } from "../../db/schema";
+import type { routeSchedules, routes, trips } from "../../db/schema";
 
 export type Trip = typeof trips.$inferSelect;
 
@@ -15,3 +15,7 @@ export type UpdateTrip = Partial<
 export type Route = typeof routes.$inferSelect;
 
 export type RouteID = Route["id"];
+
+export type RouteSchedule = typeof routeSchedules.$inferSelect;
+
+export type RouteScheduleID = RouteSchedule["id"];

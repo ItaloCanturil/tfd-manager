@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import type { CreateTripDto } from "./dto/create-trip.dto";
 import type { ListTripsDto } from "./dto/list-trips.dto";
 import { TripEntity } from "./domain/trip.entity";
@@ -13,15 +18,20 @@ export class TripsService {
   ) {}
 
   async create(data: CreateTripDto): Promise<Trip> {
-    const route = await this.tripsRepository.findRouteById(data.routeId);
+    assertUuid(data.routeScheduleId, "Trip routeScheduleId");
 
-    if (!route) {
-      throw new NotFoundException("Route not found");
+    const schedule = await this.tripsRepository.findRouteScheduleById(
+      data.routeScheduleId,
+    );
+
+    if (!schedule) {
+      throw new NotFoundException("Route schedule not found");
     }
 
     const tripEntity = TripEntity.create({
       ...data,
-      capacity: data.capacity ?? route.defaultCapacity,
+      routeId: schedule.routeId,
+      capacity: data.capacity ?? schedule.defaultCapacity,
     });
 
     const trip = await this.tripsRepository.create(tripEntity.toObject());
@@ -34,10 +44,20 @@ export class TripsService {
   }
 
   list(filters: ListTripsDto): Promise<Trip[]> {
+    if (filters.routeId) {
+      assertUuid(filters.routeId, "Trip routeId");
+    }
+
+    if (filters.routeScheduleId) {
+      assertUuid(filters.routeScheduleId, "Trip routeScheduleId");
+    }
+
     return this.tripsRepository.list(filters);
   }
 
   async findById(id: TripID): Promise<Trip> {
+    assertUuid(id, "Trip id");
+
     const trip = await this.tripsRepository.findById(id);
 
     if (!trip) {
@@ -48,6 +68,8 @@ export class TripsService {
   }
 
   async update(id: TripID, data: UpdateTrip): Promise<Trip> {
+    assertUuid(id, "Trip id");
+
     const trip = await this.tripsRepository.update(id, data);
 
     if (!trip) {
@@ -59,5 +81,15 @@ export class TripsService {
 
   cancel(id: TripID): Promise<Trip> {
     return this.update(id, { status: "CANCELED" });
+  }
+}
+
+function assertUuid(value: string, fieldName: string): void {
+  if (
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      value,
+    )
+  ) {
+    throw new BadRequestException(`${fieldName} must be a valid UUID`);
   }
 }

@@ -46,8 +46,28 @@ export type Trip = {
   name: string;
   notes: string | null;
   routeId: string;
+  routeScheduleId: string;
   status: TripStatus;
   updatedAt: string;
+};
+
+export type Route = {
+  createdAt: string;
+  destination: string;
+  id: string;
+  updatedAt: string;
+};
+
+export type RouteSchedule = {
+  createdAt: string;
+  defaultCapacity: number;
+  departureTime: string;
+  id: string;
+  isActive: boolean;
+  label: string;
+  routeId: string;
+  updatedAt: string;
+  weekdays: number[];
 };
 
 export type UpdatePatientInput = Pick<
@@ -64,6 +84,27 @@ export type CreateBookingInput = {
   hasCompanion?: boolean;
   patientId: string;
   tripId: string;
+};
+
+export type CreateTripInput = {
+  capacity?: number;
+  departureDate: string;
+  name?: string;
+  notes?: string;
+  routeScheduleId: string;
+};
+
+export type CreateRouteInput = {
+  destination: string;
+};
+
+export type CreateRouteScheduleInput = {
+  defaultCapacity: number;
+  departureTime: string;
+  isActive?: boolean;
+  label: string;
+  routeId: string;
+  weekdays: number[];
 };
 
 type LoginResponse = {
@@ -188,6 +229,68 @@ export async function listActiveTrips(token: string) {
   });
 
   return readJson<Trip[]>(response);
+}
+
+export async function listRoutes(token: string) {
+  const response = await fetch(`${apiUrl}/routes`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return readJson<Route[]>(response);
+}
+
+export async function listRouteSchedules(token: string) {
+  const response = await fetch(`${apiUrl}/route-schedules`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return readJson<RouteSchedule[]>(response);
+}
+
+export async function createTrip(token: string, trip: CreateTripInput) {
+  const response = await fetch(`${apiUrl}/trips`, {
+    body: JSON.stringify(trip),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+  });
+
+  return readJson<Trip>(response);
+}
+
+export async function createRoute(token: string, route: CreateRouteInput) {
+  const response = await fetch(`${apiUrl}/routes`, {
+    body: JSON.stringify(route),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+  });
+
+  return readJson<Route>(response);
+}
+
+export async function createRouteSchedule(
+  token: string,
+  schedule: CreateRouteScheduleInput,
+) {
+  const response = await fetch(`${apiUrl}/route-schedules`, {
+    body: JSON.stringify(schedule),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+  });
+
+  return readJson<RouteSchedule>(response);
 }
 
 export { apiUrl };

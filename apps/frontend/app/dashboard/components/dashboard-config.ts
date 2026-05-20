@@ -1,4 +1,4 @@
-import type { Trip, UserRole } from "../../lib/tfd-api";
+import type { Route, RouteSchedule, Trip, UserRole } from "../../lib/tfd-api";
 
 export const roleLabels: Record<UserRole, string> = {
   COORDINATOR: "Coordenador",
@@ -48,7 +48,26 @@ export const roleHome: Record<UserRole, RoleHome> = {
 
 export type DashboardTrip = Pick<
   Trip,
-  "capacity" | "departureDate" | "id" | "name" | "status"
+  | "capacity"
+  | "departureDate"
+  | "id"
+  | "name"
+  | "routeId"
+  | "routeScheduleId"
+  | "status"
+>;
+
+export type DashboardRoute = Pick<Route, "destination" | "id">;
+
+export type DashboardRouteSchedule = Pick<
+  RouteSchedule,
+  | "defaultCapacity"
+  | "departureTime"
+  | "id"
+  | "isActive"
+  | "label"
+  | "routeId"
+  | "weekdays"
 >;
 
 export const fallbackTrips: DashboardTrip[] = [
@@ -57,6 +76,8 @@ export const fallbackTrips: DashboardTrip[] = [
     departureDate: new Date().toISOString().slice(0, 10),
     id: "juazeiro-petrolina",
     name: "Juazeiro / Petrolina",
+    routeId: "juazeiro-petrolina",
+    routeScheduleId: "juazeiro-petrolina-manha",
     status: "ACTIVE",
   },
   {
@@ -64,6 +85,8 @@ export const fallbackTrips: DashboardTrip[] = [
     departureDate: new Date().toISOString().slice(0, 10),
     id: "salvador",
     name: "Salvador",
+    routeId: "salvador",
+    routeScheduleId: "salvador-padrao",
     status: "ACTIVE",
   },
 ];

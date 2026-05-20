@@ -12,6 +12,8 @@ import {
   getCurrentUser,
   listActiveTrips,
   listPatients,
+  listRouteSchedules,
+  listRoutes,
   type AuthenticatedUser,
   type Patient,
 } from "../../lib/tfd-api";
@@ -20,6 +22,8 @@ import { DashboardMetrics } from "./dashboard-metrics";
 import {
   fallbackTrips,
   roleHome,
+  type DashboardRoute,
+  type DashboardRouteSchedule,
   type DashboardTab,
   type DashboardTrip,
   type RoleHome,
@@ -44,6 +48,10 @@ export function DashboardPage() {
   });
   const [activeTrips, setActiveTrips] = useState<DashboardTrip[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
+  const [routes, setRoutes] = useState<DashboardRoute[]>([]);
+  const [routeSchedules, setRouteSchedules] = useState<
+    DashboardRouteSchedule[]
+  >([]);
 
   useEffect(() => {
     const token = readAccessToken();
@@ -61,11 +69,15 @@ export function DashboardPage() {
         return Promise.all([
           listActiveTrips(token).catch(() => []),
           listPatients(token).catch(() => []),
+          listRoutes(token).catch(() => []),
+          listRouteSchedules(token).catch(() => []),
         ]);
       })
-      .then(([trips, patientList]) => {
+      .then(([trips, patientList, routeList, scheduleList]) => {
         setActiveTrips(trips);
         setPatients(patientList);
+        setRoutes(routeList);
+        setRouteSchedules(scheduleList);
       })
       .catch(() => {
         clearAccessToken();
@@ -97,6 +109,9 @@ export function DashboardPage() {
     <RoleDashboard
       onSignOut={handleSignOut}
       patients={patients}
+      routes={routes}
+      routeSchedules={routeSchedules}
+      token={readAccessToken() ?? ""}
       trips={activeTrips.length > 0 ? activeTrips : fallbackTrips}
       user={session.user}
     />
@@ -106,11 +121,17 @@ export function DashboardPage() {
 function RoleDashboard({
   onSignOut,
   patients,
+  routes,
+  routeSchedules,
+  token,
   trips,
   user,
 }: {
   onSignOut: () => void;
   patients: Patient[];
+  routes: DashboardRoute[];
+  routeSchedules: DashboardRouteSchedule[];
+  token: string;
   trips: DashboardTrip[];
   user: AuthenticatedUser;
 }) {
@@ -136,7 +157,15 @@ function RoleDashboard({
         />
       ) : null}
       {activeTab === "pacientes" ? <PatientsTab patients={patients} /> : null}
-      {activeTab === "rotas" ? <RoutesTab trips={trips} /> : null}
+      {activeTab === "rotas" ? (
+        <RoutesTab
+          role={user.role}
+          routeSchedules={routeSchedules}
+          routes={routes}
+          token={token}
+          trips={trips}
+        />
+      ) : null}
       {activeTab === "relatorios" ? <ReportsTab trips={trips} /> : null}
     </DashboardShell>
   );
