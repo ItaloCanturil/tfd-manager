@@ -9,14 +9,12 @@ import { ReportsModule } from "./modules/reports/reports.module";
 import { RoutesModule } from "./modules/routes/routes.module";
 import { TripsModule } from "./modules/trips/trips.module";
 
-const envFilePath = process.env.NODE_ENV
-  ? [`.env.${process.env.NODE_ENV}`, ".env"]
-  : ".env";
-
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath,
+      envFilePath: process.env.NODE_ENV
+        ? [`.env.${process.env.NODE_ENV}`, ".env"]
+        : [".env"],
       isGlobal: true,
     }),
     DbModule,

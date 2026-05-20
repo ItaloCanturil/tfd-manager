@@ -1,5 +1,5 @@
 {
-  "name": "sist-tfd",
+  "name": "tfd-manager",
   "private": true,
   "scripts": {
     "build": "turbo run build",

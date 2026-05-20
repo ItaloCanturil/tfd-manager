@@ -22,7 +22,7 @@ services:
     environment:
       DATABASE_URL: postgresql://tfd:tfd@postgres:5432/tfd?schema=public
       FRONTEND_URL: http://localhost:3000
-      JWT_SECRET: change-me-in-production
+      JWT_SECRET: local-dev-secret
       PORT: 3333
       UPLOADS_DIR: /uploads
     ports:
