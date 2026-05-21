@@ -53,17 +53,17 @@ export function TripsByLocation({
     : "Nenhum paciente filtrado";
 
   return (
-    <section className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+    <section className="rounded-[calc(var(--radius)*4)] border border-border/70 bg-card/90 p-6 shadow-sm backdrop-blur">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-emerald-700">
+          <p className="text-sm font-semibold text-primary">
             Viagens do dia
           </p>
-          <h2 className="mt-2 text-3xl font-semibold leading-tight">
+          <h2 className="mt-2 font-serif text-3xl font-semibold leading-tight tracking-tight">
             {todayLabel}
           </h2>
         </div>
-        <span className="w-fit rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
+        <span className="w-fit rounded-full border border-primary/20 bg-primary/10 px-4 py-3 text-sm font-semibold text-primary">
           {visibleTrips.length}{" "}
           {visibleTrips.length === 1 ? "viagem" : "viagens"}
           {" / "}
@@ -88,17 +88,17 @@ export function TripsByLocation({
 
             return (
               <article
-                className="rounded-lg border border-zinc-200 bg-zinc-50 p-4"
+                className="rounded-2xl border border-border bg-muted/40 p-4"
                 key={trip.id}
               >
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <h3 className="text-lg font-semibold">{trip.name}</h3>
-                    <p className="mt-1 text-sm text-zinc-500">
+                    <p className="mt-1 text-sm text-muted-foreground">
                       Saida em {formatDate(trip.departureDate)}
                     </p>
                   </div>
-                  <span className="w-fit rounded-md border border-zinc-200 bg-white px-3 py-1 text-xs font-semibold text-zinc-600">
+                  <span className="w-fit rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-muted-foreground">
                     {tripBookings.length} paciente
                     {tripBookings.length === 1 ? "" : "s"}
                   </span>
@@ -115,8 +115,8 @@ export function TripsByLocation({
                   />
                 </dl>
 
-                <div className="mt-4 rounded-lg border border-dashed border-zinc-300 bg-white p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                <div className="mt-4 rounded-2xl border border-dashed border-border bg-background/90 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Pacientes da viagem
                   </p>
                   {tripBookings.length > 0 ? (
@@ -126,24 +126,24 @@ export function TripsByLocation({
 
                         return (
                           <li
-                            className="flex flex-col gap-2 rounded-md border border-zinc-200 bg-zinc-50 p-3"
+                            className="flex flex-col gap-2 rounded-xl border border-border bg-muted/40 p-3"
                             key={booking.id}
                           >
                             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                               <div>
-                                <p className="font-semibold text-zinc-900">
+                                <p className="font-semibold text-foreground">
                                   {patient?.name ?? booking.patientId}
                                 </p>
-                                <p className="mt-1 text-sm text-zinc-500">
+                                <p className="mt-1 text-sm text-muted-foreground">
                                   {patient?.cpf ?? "CPF indisponivel"} -{" "}
                                   {booking.finalDestination}
                                 </p>
                               </div>
-                              <span className="w-fit rounded-md border border-zinc-200 bg-white px-2 py-1 text-xs font-semibold text-zinc-600">
+                              <span className="w-fit rounded-full border border-border bg-background px-2 py-1 text-xs font-semibold text-muted-foreground">
                                 {bookingStatusLabels[booking.status]}
                               </span>
                             </div>
-                            <p className="text-xs text-zinc-500">
+                            <p className="text-xs text-muted-foreground">
                               Consulta em {formatDate(booking.appointmentDate)}
                             </p>
                           </li>
@@ -151,7 +151,7 @@ export function TripsByLocation({
                       })}
                     </ul>
                   ) : (
-                    <p className="mt-3 text-sm text-zinc-500">
+                    <p className="mt-3 text-sm text-muted-foreground">
                       Nenhum paciente agendado para esta viagem na data
                       selecionada.
                     </p>
@@ -161,15 +161,15 @@ export function TripsByLocation({
             );
           })
         ) : (
-          <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 text-sm text-zinc-600 md:col-span-2">
+          <div className="rounded-2xl border border-dashed border-border bg-muted/40 p-6 text-sm text-muted-foreground md:col-span-2">
             Nenhuma viagem encontrada para a data selecionada.
           </div>
         )}
       </div>
 
-      <div className="mt-4 rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-4">
-        <p className="text-sm font-semibold text-zinc-700">{patientPreview}</p>
-        <p className="mt-1 text-sm leading-6 text-zinc-500">
+      <div className="mt-4 rounded-2xl border border-dashed border-border bg-muted/40 p-4">
+        <p className="text-sm font-semibold text-foreground">{patientPreview}</p>
+        <p className="mt-1 text-sm leading-6 text-muted-foreground">
           A lista abaixo cruza a data escolhida com as reservas e mostra os
           pacientes de cada viagem.
         </p>
@@ -193,7 +193,7 @@ function groupBookingsByTrip(bookings: Booking[]) {
 function TripMetric({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+      <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         {label}
       </dt>
       <dd className="mt-1 text-base font-semibold">{value}</dd>

@@ -15,11 +15,13 @@ export function DashboardMetrics({ role }: { role: UserRole }) {
         ["Perfil", roleLabels[role], "lg:col-span-1"],
       ].map(([label, value, span]) => (
         <div
-          className={`rounded-lg border border-zinc-200 bg-white p-5 shadow-sm ${span}`}
+          className={`rounded-[calc(var(--radius)*4)] border border-border/70 bg-card/90 p-5 shadow-sm backdrop-blur ${span}`}
           key={label}
         >
-          <p className="text-sm font-medium text-zinc-500">{label}</p>
-          <p className="mt-2 break-words text-2xl font-semibold">{value}</p>
+          <p className="text-sm font-medium text-muted-foreground">{label}</p>
+          <p className="mt-2 break-words font-serif text-2xl font-semibold tracking-tight">
+            {value}
+          </p>
         </div>
       ))}
     </div>

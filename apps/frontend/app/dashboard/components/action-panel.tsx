@@ -9,16 +9,20 @@ export function ActionPanel({ role }: { role: UserRole }) {
   ];
 
   return (
-    <section className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+    <section className="rounded-[calc(var(--radius)*4)] border border-border/70 bg-card/90 p-5 shadow-sm backdrop-blur">
       <div>
-        <p className="text-sm font-semibold text-zinc-500">Acoes rapidas</p>
-        <h2 className="mt-2 text-xl font-semibold">Atalhos do painel</h2>
+        <p className="text-sm font-semibold text-muted-foreground">
+          Acoes rapidas
+        </p>
+        <h2 className="mt-2 font-serif text-xl font-semibold tracking-tight">
+          Atalhos do painel
+        </h2>
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
         {actions.map((action) => (
           <button
-            className="min-h-28 rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-left text-sm font-semibold transition hover:border-zinc-400 hover:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-100"
+            className="min-h-28 rounded-2xl border border-border bg-muted/50 p-4 text-left text-sm font-semibold transition hover:border-primary/40 hover:bg-accent focus:outline-none focus:ring-2 focus:ring-ring/40"
             key={action}
             type="button"
           >

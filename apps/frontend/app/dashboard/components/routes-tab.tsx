@@ -182,12 +182,14 @@ export function RoutesTab({
   }
 
   return (
-    <section className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+    <section className="rounded-[calc(var(--radius)*4)] border border-border/70 bg-card/90 p-6 shadow-sm backdrop-blur">
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-semibold text-zinc-500">Rotas</p>
-          <h2 className="mt-2 text-3xl font-semibold">Locais atendidos</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-zinc-600">
+          <p className="text-sm font-semibold text-muted-foreground">Rotas</p>
+          <h2 className="mt-2 font-serif text-3xl font-semibold tracking-tight">
+            Locais atendidos
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             Visao das rotas, saidas recorrentes e proximas viagens por
             localidade.
           </p>
@@ -195,7 +197,7 @@ export function RoutesTab({
         <div className="flex flex-wrap items-center gap-3">
           {role === "COORDINATOR" ? (
             <button
-              className="rounded-lg bg-emerald-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800"
+              className="rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
               onClick={() => {
                 setMessage(null);
                 setIsCreateRouteOpen(true);
@@ -205,7 +207,7 @@ export function RoutesTab({
               Criar rota
             </button>
           ) : null}
-          <span className="w-fit rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
+          <span className="w-fit rounded-full border border-primary/20 bg-primary/10 px-4 py-3 text-sm font-semibold text-primary">
             {managedRoutes.length} rota{managedRoutes.length === 1 ? "" : "s"}
           </span>
         </div>
@@ -220,14 +222,14 @@ export function RoutesTab({
       ) : null}
 
       {message ? (
-        <p className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm font-medium text-zinc-700">
+        <p className="mt-4 rounded-2xl border border-border bg-muted/50 px-4 py-3 text-sm font-medium text-foreground">
           {message}
         </p>
       ) : null}
 
       <div className="mt-6 space-y-3">
         {managedRoutes.length === 0 ? (
-          <p className="rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-5 text-sm text-zinc-600">
+          <p className="rounded-2xl border border-border bg-muted/50 px-4 py-5 text-sm text-muted-foreground">
             Nenhuma rota cadastrada. Cadastre as rotas fixas antes de criar
             viagens.
           </p>
@@ -244,27 +246,27 @@ export function RoutesTab({
 
           return (
             <article
-              className="overflow-hidden rounded-lg border border-zinc-200"
+              className="overflow-hidden rounded-2xl border border-border"
               key={route.id}
             >
               <button
                 aria-expanded={isExpanded}
-                className="flex w-full flex-col gap-3 bg-zinc-50 px-4 py-4 text-left transition hover:bg-zinc-100 md:flex-row md:items-center md:justify-between"
+                className="flex w-full flex-col gap-3 bg-muted/40 px-4 py-4 text-left transition hover:bg-accent md:flex-row md:items-center md:justify-between"
                 onClick={() =>
                   setExpandedRouteId(isExpanded ? "" : route.id)
                 }
                 type="button"
               >
                 <span>
-                  <span className="block text-base font-semibold text-zinc-950">
+                  <span className="block text-base font-semibold text-foreground">
                     {route.destination}
                   </span>
-                  <span className="mt-1 block text-sm text-zinc-600">
+                  <span className="mt-1 block text-sm text-muted-foreground">
                     {schedules.length} saida{schedules.length === 1 ? "" : "s"}{" "}
                     recorrente{schedules.length === 1 ? "" : "s"}
                   </span>
                 </span>
-                <span className="flex items-center gap-3 text-sm font-semibold text-zinc-700">
+                <span className="flex items-center gap-3 text-sm font-semibold text-muted-foreground">
                   {upcomingTripsCount} proxima
                   {upcomingTripsCount === 1 ? "" : "s"}
                   <span aria-hidden="true">{isExpanded ? "^" : "v"}</span>
@@ -292,7 +294,7 @@ export function RoutesTab({
                   </div>
 
                   {schedules.length === 0 ? (
-                    <p className="rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-5 text-sm text-zinc-600">
+                    <p className="rounded-2xl border border-border bg-muted/50 px-4 py-5 text-sm text-muted-foreground">
                       Nenhuma saida recorrente cadastrada para esta rota.
                     </p>
                   ) : null}
@@ -303,23 +305,23 @@ export function RoutesTab({
 
                     return (
                       <div
-                        className="rounded-lg border border-zinc-200 p-4"
+                        className="rounded-2xl border border-border p-4"
                         key={schedule.id}
                       >
                         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                           <div>
-                            <h3 className="text-sm font-semibold text-zinc-950">
+                            <h3 className="text-sm font-semibold text-foreground">
                               {schedule.label} -{" "}
                               {formatTime(schedule.departureTime)}
                             </h3>
-                            <p className="mt-1 text-sm text-zinc-600">
+                            <p className="mt-1 text-sm text-muted-foreground">
                               {formatWeekdays(schedule.weekdays)} -{" "}
                               {schedule.defaultCapacity} vagas padrao
                             </p>
                           </div>
                           {role === "COORDINATOR" ? (
                             <button
-                              className="w-fit rounded-lg bg-zinc-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
+                              className="w-fit rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                               disabled={isSaving}
                               onClick={() => handleOpenForm(schedule)}
                               type="button"
@@ -330,11 +332,11 @@ export function RoutesTab({
                         </div>
 
                         {formScheduleId === schedule.id ? (
-                          <div className="mt-4 grid gap-3 rounded-lg border border-zinc-200 bg-zinc-50 p-4 md:grid-cols-[1fr_1fr]">
-                            <label className="text-sm font-medium text-zinc-700">
+                          <div className="mt-4 grid gap-3 rounded-2xl border border-border bg-muted/50 p-4 md:grid-cols-[1fr_1fr]">
+                            <label className="text-sm font-medium text-foreground">
                               Data
                               <input
-                                className="mt-2 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-950 outline-none focus:border-zinc-950"
+                                className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40"
                                 onChange={(event) =>
                                   setForm((currentForm) => ({
                                     ...currentForm,
@@ -345,10 +347,10 @@ export function RoutesTab({
                                 value={form.departureDate}
                               />
                             </label>
-                            <label className="text-sm font-medium text-zinc-700">
+                            <label className="text-sm font-medium text-foreground">
                               Capacidade
                               <input
-                                className="mt-2 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-950 outline-none focus:border-zinc-950"
+                                className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40"
                                 min="1"
                                 onChange={(event) =>
                                   setForm((currentForm) => ({
@@ -360,10 +362,10 @@ export function RoutesTab({
                                 value={form.capacity}
                               />
                             </label>
-                            <label className="text-sm font-medium text-zinc-700">
+                            <label className="text-sm font-medium text-foreground">
                               Nome
                               <input
-                                className="mt-2 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-950 outline-none focus:border-zinc-950"
+                                className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40"
                                 onChange={(event) =>
                                   setForm((currentForm) => ({
                                     ...currentForm,
@@ -375,10 +377,10 @@ export function RoutesTab({
                                 value={form.name}
                               />
                             </label>
-                            <label className="text-sm font-medium text-zinc-700">
+                            <label className="text-sm font-medium text-foreground">
                               Observacoes
                               <input
-                                className="mt-2 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-950 outline-none focus:border-zinc-950"
+                                className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40"
                                 onChange={(event) =>
                                   setForm((currentForm) => ({
                                     ...currentForm,
@@ -391,7 +393,7 @@ export function RoutesTab({
                             </label>
                             <div className="flex gap-2 md:col-span-2">
                               <button
-                                className="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-emerald-300"
+                                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                                 disabled={isSaving}
                                 onClick={() => handleCreateTrip(route, schedule)}
                                 type="button"
@@ -399,7 +401,7 @@ export function RoutesTab({
                                 Salvar viagem
                               </button>
                               <button
-                                className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:bg-white"
+                                className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-accent"
                                 disabled={isSaving}
                                 onClick={() => setFormScheduleId(null)}
                                 type="button"
@@ -410,10 +412,10 @@ export function RoutesTab({
                           </div>
                         ) : null}
 
-                        <div className="mt-4 overflow-hidden rounded-lg border border-zinc-200">
+                        <div className="mt-4 overflow-hidden rounded-2xl border border-border">
                           {upcomingTrips.length > 0 ? (
                             <table className="w-full min-w-[560px] text-left text-sm">
-                              <thead className="bg-zinc-100 text-xs uppercase tracking-wide text-zinc-600">
+                              <thead className="bg-muted/70 text-xs uppercase tracking-wide text-muted-foreground">
                                 <tr>
                                   <th className="px-4 py-3">Viagem</th>
                                   <th className="px-4 py-3">Saida</th>
@@ -424,7 +426,7 @@ export function RoutesTab({
                               <tbody>
                                 {upcomingTrips.slice(0, 5).map((trip) => (
                                   <tr
-                                    className="border-t border-zinc-200"
+                                    className="border-t border-border"
                                     key={trip.id}
                                   >
                                     <td className="px-4 py-3 font-medium">
@@ -444,7 +446,7 @@ export function RoutesTab({
                               </tbody>
                             </table>
                           ) : (
-                            <p className="bg-zinc-50 px-4 py-5 text-sm text-zinc-600">
+                            <p className="bg-muted/50 px-4 py-5 text-sm text-muted-foreground">
                               Nenhuma viagem futura cadastrada para esta saida.
                             </p>
                           )}
@@ -464,11 +466,11 @@ export function RoutesTab({
 
 function RouteMetric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-      <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+    <div className="rounded-2xl border border-border bg-muted/50 p-4">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         {label}
       </p>
-      <p className="mt-2 text-sm font-semibold text-zinc-950">{value}</p>
+      <p className="mt-2 text-sm font-semibold text-foreground">{value}</p>
     </div>
   );
 }

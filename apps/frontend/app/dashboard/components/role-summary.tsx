@@ -10,11 +10,15 @@ export function RoleSummary({
 }) {
   return (
     <div
-      className={`rounded-lg border border-l-4 border-zinc-200 bg-white p-6 shadow-sm ${home.accent}`}
+      className={`rounded-[calc(var(--radius)*4)] border border-border/70 bg-card/90 p-6 shadow-sm backdrop-blur ${home.accent}`}
     >
-      <p className="text-sm font-semibold text-zinc-500">{roleLabels[role]}</p>
-      <h2 className="mt-2 text-3xl font-semibold">{home.focus}</h2>
-      <p className="mt-3 max-w-3xl text-base leading-7 text-zinc-600">
+      <p className="text-sm font-semibold text-muted-foreground">
+        {roleLabels[role]}
+      </p>
+      <h2 className="mt-2 font-serif text-3xl font-semibold tracking-tight">
+        {home.focus}
+      </h2>
+      <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">
         {home.summary}
       </p>
     </div>

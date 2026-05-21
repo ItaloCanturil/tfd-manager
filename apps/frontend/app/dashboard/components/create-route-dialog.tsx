@@ -186,19 +186,19 @@ export function CreateRouteDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-20 flex items-center justify-center bg-zinc-950/45 px-4 py-8">
-      <section className="max-h-full w-full max-w-3xl overflow-auto rounded-lg bg-white p-6 shadow-xl">
+    <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/45 px-4 py-8 backdrop-blur-sm">
+      <section className="max-h-full w-full max-w-3xl overflow-auto rounded-[calc(var(--radius)*5)] border border-border bg-background p-6 shadow-2xl">
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
               Rotas
             </p>
-            <h2 className="mt-2 text-xl font-semibold text-zinc-950">
+            <h2 className="mt-2 font-serif text-xl font-semibold text-foreground">
               Criar rota
             </h2>
           </div>
           <button
-            className="h-9 rounded-md border border-zinc-300 px-3 text-sm font-medium text-zinc-700"
+            className="h-9 rounded-md border border-border px-3 text-sm font-medium text-muted-foreground"
             disabled={isSaving}
             onClick={onClose}
             type="button"
@@ -208,10 +208,10 @@ export function CreateRouteDialog({
         </div>
 
         <form onSubmit={handleSubmit}>
-          <label className="block text-sm font-medium text-zinc-700">
+          <label className="block text-sm font-medium text-foreground">
             Destino
             <input
-              className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm text-zinc-950 outline-none focus:border-emerald-700"
+              className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40"
               onChange={(event) =>
                 setForm((currentForm) => ({
                   ...currentForm,
@@ -226,11 +226,11 @@ export function CreateRouteDialog({
 
           <div className="mt-5 space-y-4">
             <div className="flex items-center justify-between gap-3">
-              <h3 className="text-sm font-semibold text-zinc-950">
+              <h3 className="text-sm font-semibold text-foreground">
                 Saidas recorrentes
               </h3>
               <button
-                className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-semibold text-zinc-700"
+                className="rounded-md border border-border px-3 py-2 text-sm font-semibold text-muted-foreground"
                 disabled={isSaving}
                 onClick={addSchedule}
                 type="button"
@@ -241,14 +241,14 @@ export function CreateRouteDialog({
 
             {form.schedules.map((schedule, index) => (
               <div
-                className="rounded-lg border border-zinc-200 bg-zinc-50 p-4"
+                className="rounded-2xl border border-border bg-muted/50 p-4"
                 key={index}
               >
                 <div className="grid gap-4 md:grid-cols-[1fr_150px_150px]">
-                  <label className="block text-sm font-medium text-zinc-700">
+                  <label className="block text-sm font-medium text-foreground">
                     Nome
                     <input
-                      className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm text-zinc-950 outline-none focus:border-emerald-700"
+                      className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40"
                       onChange={(event) =>
                         updateSchedule(index, "label", event.target.value)
                       }
@@ -257,10 +257,10 @@ export function CreateRouteDialog({
                       value={schedule.label}
                     />
                   </label>
-                  <label className="block text-sm font-medium text-zinc-700">
+                  <label className="block text-sm font-medium text-foreground">
                     Horario
                     <input
-                      className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm text-zinc-950 outline-none focus:border-emerald-700"
+                      className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40"
                       onChange={(event) =>
                         updateSchedule(
                           index,
@@ -273,10 +273,10 @@ export function CreateRouteDialog({
                       value={schedule.departureTime}
                     />
                   </label>
-                  <label className="block text-sm font-medium text-zinc-700">
+                  <label className="block text-sm font-medium text-foreground">
                     Capacidade
                     <input
-                      className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm text-zinc-950 outline-none focus:border-emerald-700"
+                      className="mt-2 h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/40"
                       min="1"
                       onChange={(event) =>
                         updateSchedule(
@@ -293,18 +293,18 @@ export function CreateRouteDialog({
                 </div>
 
                 <fieldset className="mt-4">
-                  <legend className="text-sm font-medium text-zinc-700">
+                  <legend className="text-sm font-medium text-foreground">
                     Dias fixos
                   </legend>
                   <div className="mt-2 grid gap-2 sm:grid-cols-4 md:grid-cols-7">
                     {weekdayOptions.map((weekday) => (
                       <label
-                        className="flex items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700"
+                        className="flex items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground"
                         key={weekday.value}
                       >
                         <input
                           checked={schedule.weekdays.includes(weekday.value)}
-                          className="h-4 w-4 accent-emerald-700"
+                          className="h-4 w-4 accent-[hsl(var(--primary))]"
                           onChange={(event) =>
                             updateWeekday(
                               index,
@@ -322,7 +322,7 @@ export function CreateRouteDialog({
 
                 {form.schedules.length > 1 ? (
                   <button
-                    className="mt-4 rounded-md border border-red-200 px-3 py-2 text-sm font-semibold text-red-700"
+                    className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm font-semibold text-destructive"
                     disabled={isSaving}
                     onClick={() => removeSchedule(index)}
                     type="button"
@@ -334,11 +334,11 @@ export function CreateRouteDialog({
             ))}
           </div>
 
-          {error ? <p className="mt-4 text-sm text-red-700">{error}</p> : null}
+          {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
 
           <div className="mt-6 flex justify-end gap-3">
             <button
-              className="h-10 rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700"
+              className="h-10 rounded-md border border-border px-4 text-sm font-medium text-muted-foreground"
               disabled={isSaving}
               onClick={onClose}
               type="button"
@@ -346,7 +346,7 @@ export function CreateRouteDialog({
               Cancelar
             </button>
             <button
-              className="h-10 rounded-md bg-emerald-700 px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:bg-zinc-400"
+              className="h-10 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50"
               disabled={isSaving}
               type="submit"
             >

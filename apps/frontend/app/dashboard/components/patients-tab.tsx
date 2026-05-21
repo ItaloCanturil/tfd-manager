@@ -6,24 +6,28 @@ export function PatientsTab({ patients }: { patients: Patient[] }) {
   );
 
   return (
-    <section className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+    <section className="rounded-[calc(var(--radius)*4)] border border-border/70 bg-card/90 p-6 shadow-sm backdrop-blur">
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-semibold text-zinc-500">Pacientes</p>
-          <h2 className="mt-2 text-3xl font-semibold">Lista de pacientes</h2>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-zinc-600">
+          <p className="text-sm font-semibold text-muted-foreground">
+            Pacientes
+          </p>
+          <h2 className="mt-2 font-serif text-3xl font-semibold tracking-tight">
+            Lista de pacientes
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             Pacientes cadastrados em ordem alfabetica para consulta rapida.
           </p>
         </div>
-        <span className="w-fit rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
+        <span className="w-fit rounded-full border border-primary/20 bg-primary/10 px-4 py-3 text-sm font-semibold text-primary">
           {orderedPatients.length} paciente
           {orderedPatients.length === 1 ? "" : "s"}
         </span>
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-lg border border-zinc-200">
+      <div className="mt-6 overflow-hidden rounded-2xl border border-border">
         <table className="w-full min-w-[760px] text-left text-sm">
-          <thead className="bg-zinc-100 text-xs uppercase tracking-wide text-zinc-600">
+          <thead className="bg-muted/70 text-xs uppercase tracking-wide text-muted-foreground">
             <tr>
               <th className="px-4 py-3">Nome</th>
               <th className="px-4 py-3">CPF</th>
@@ -35,10 +39,10 @@ export function PatientsTab({ patients }: { patients: Patient[] }) {
           <tbody>
             {orderedPatients.length > 0 ? (
               orderedPatients.map((patient) => (
-                <tr className="border-t border-zinc-200" key={patient.id}>
+                <tr className="border-t border-border" key={patient.id}>
                   <td className="px-4 py-3 font-medium">
                     <a
-                      className="transition hover:text-emerald-700"
+                      className="transition hover:text-primary"
                       href={`/patients/${encodeURIComponent(patient.cpf)}`}
                     >
                       {patient.name}
@@ -52,7 +56,7 @@ export function PatientsTab({ patients }: { patients: Patient[] }) {
               ))
             ) : (
               <tr>
-                <td className="px-4 py-6 text-zinc-600" colSpan={5}>
+                <td className="px-4 py-6 text-muted-foreground" colSpan={5}>
                   Nenhum paciente cadastrado.
                 </td>
               </tr>
