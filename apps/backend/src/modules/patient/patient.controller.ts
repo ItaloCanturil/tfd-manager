@@ -26,6 +26,12 @@ export class PatientController {
     return this.patientService.create(body);
   }
 
+  @Get()
+  @Roles("COORDINATOR", "RECEPTIONIST", "TRANSPORT")
+  list() {
+    return this.patientService.list();
+  }
+
   @Get("cpf/:cpf")
   @Roles("COORDINATOR", "RECEPTIONIST", "TRANSPORT")
   async findByCpf(@Param("cpf") cpf: string) {

@@ -6,6 +6,7 @@ import {
   pgEnum,
   pgTable,
   text,
+  time,
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
@@ -36,10 +37,25 @@ const timestamps = {
 export const routes = pgTable("routes", {
   id: uuid("id").primaryKey().defaultRandom(),
   destination: text("destination").notNull(),
-  fixedWeekdays: integer("fixed_weekdays").array().notNull(),
-  defaultCapacity: integer("default_capacity").notNull(),
   ...timestamps,
 });
+
+export const routeSchedules = pgTable(
+  "route_schedules",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    routeId: uuid("route_id")
+      .notNull()
+      .references(() => routes.id, { onDelete: "cascade" }),
+    label: text("label").notNull(),
+    departureTime: time("departure_time").notNull(),
+    weekdays: integer("weekdays").array().notNull(),
+    defaultCapacity: integer("default_capacity").notNull(),
+    isActive: boolean("is_active").notNull().default(true),
+    ...timestamps,
+  },
+  (table) => [index("route_schedules_route_idx").on(table.routeId)],
+);
 
 export const trips = pgTable(
   "trips",
@@ -48,6 +64,9 @@ export const trips = pgTable(
     routeId: uuid("route_id")
       .notNull()
       .references(() => routes.id, { onDelete: "restrict" }),
+    routeScheduleId: uuid("route_schedule_id")
+      .notNull()
+      .references(() => routeSchedules.id, { onDelete: "restrict" }),
     name: text("name").notNull(),
     notes: text("notes"),
     departureDate: date("departure_date").notNull(),
@@ -57,6 +76,10 @@ export const trips = pgTable(
   },
   (table) => [
     index("trips_route_departure_idx").on(table.routeId, table.departureDate),
+    index("trips_schedule_departure_idx").on(
+      table.routeScheduleId,
+      table.departureDate,
+    ),
   ],
 );
 
@@ -99,7 +122,7 @@ export const bookings = pgTable(
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
-  email: text("email").notNull().unique(),
+  username: text("username").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
   role: userRole("role").notNull(),
   isActive: boolean("is_active").notNull().default(true),

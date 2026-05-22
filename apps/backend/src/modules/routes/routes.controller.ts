@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -42,5 +43,11 @@ export class RoutesController {
   @Roles("COORDINATOR")
   update(@Param("id") id: string, @Body() body: UpdateRouteDto) {
     return this.routesService.update(id, body);
+  }
+
+  @Delete(":id")
+  @Roles("COORDINATOR")
+  delete(@Param("id") id: string) {
+    return this.routesService.delete(id);
   }
 }

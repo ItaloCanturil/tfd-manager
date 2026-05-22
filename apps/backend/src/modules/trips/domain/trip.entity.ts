@@ -3,6 +3,7 @@ import { InvalidTripDepartureDateError } from "./trip.errors";
 export type TripProps = {
   id?: string;
   routeId: string;
+  routeScheduleId: string;
   name?: string;
   notes?: string | null;
   departureDate: string;

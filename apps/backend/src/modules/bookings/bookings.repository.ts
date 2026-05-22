@@ -42,6 +42,9 @@ export class BookingsRepository {
       filters.patientId ? eq(bookings.patientId, filters.patientId) : undefined,
       filters.tripId ? eq(bookings.tripId, filters.tripId) : undefined,
       filters.status ? eq(bookings.status, filters.status) : undefined,
+      filters.appointmentDate
+        ? eq(bookings.appointmentDate, filters.appointmentDate)
+        : undefined,
     ].filter((condition) => condition !== undefined);
 
     return this.db

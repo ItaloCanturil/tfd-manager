@@ -22,6 +22,27 @@
       "when": 1778851745055,
       "tag": "0002_mean_daimon_hellstrom",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1779217634414,
+      "tag": "0003_jittery_reptil",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1779218700000,
+      "tag": "0004_seed_test_coordinator",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1779285954002,
+      "tag": "0005_jittery_archangel",
+      "breakpoints": true
     }
   ]
 }
