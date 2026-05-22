@@ -47,4 +47,14 @@ export class RoutesService {
 
     return route;
   }
+
+  async delete(id: RouteID): Promise<Route> {
+    const route = await this.routesRepository.delete(id);
+
+    if (!route) {
+      throw new NotFoundException("Route not found");
+    }
+
+    return route;
+  }
 }

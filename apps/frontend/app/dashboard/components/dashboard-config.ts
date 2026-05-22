@@ -3,14 +3,8 @@ import type {
   Route,
   RouteSchedule,
   Trip,
-  UserRole,
 } from "../../lib/tfd-api";
-
-export const roleLabels: Record<UserRole, string> = {
-  COORDINATOR: "Coordenador",
-  RECEPTIONIST: "Recepcionista",
-  TRANSPORT: "Transporte",
-};
+import type { UserRole } from "../../lib/tfd-api";
 
 export type RoleHome = {
   accent: string;

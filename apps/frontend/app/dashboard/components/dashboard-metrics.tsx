@@ -1,5 +1,5 @@
 import type { UserRole } from "../../lib/tfd-api";
-import { roleLabels } from "./dashboard-config";
+import { roleLabels } from "../../lib/role-labels";
 
 export function DashboardMetrics({ role }: { role: UserRole }) {
   return (

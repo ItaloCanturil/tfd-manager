@@ -39,6 +39,18 @@ export class TripsRepository {
     });
   }
 
+  async findByRouteScheduleAndDate(
+    routeScheduleId: RouteScheduleID,
+    departureDate: string,
+  ): Promise<Trip | undefined> {
+    return this.db.query.trips.findFirst({
+      where: and(
+        eq(trips.routeScheduleId, routeScheduleId),
+        eq(trips.departureDate, departureDate),
+      ),
+    });
+  }
+
   async list(filters: ListTripsDto): Promise<Trip[]> {
     const conditions = [
       filters.date ? eq(trips.departureDate, filters.date) : undefined,

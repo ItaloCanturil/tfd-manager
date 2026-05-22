@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/toaster";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html lang="pt-BR" className={cn("font-sans", geist.variable)}>
       <body className={cn(geistSans.variable, geistMono.variable, "theme antialiased")}>
         {children}
+        <Toaster />
       </body>
     </html>
   );

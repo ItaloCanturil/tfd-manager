@@ -1,14 +1,19 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   createTrip,
+  listActiveTrips,
   type CreateTripInput,
   type Route,
   type RouteSchedule,
   type UserRole,
 } from "../../lib/tfd-api";
 import { CreateRouteDialog } from "./create-route-dialog";
+import { DeleteRouteDialog } from "./delete-route-dialog";
+import { EditRouteDialog } from "./edit-route-dialog";
+import { toast } from "@/hooks/use-toast";
 import type {
   DashboardRoute,
   DashboardRouteSchedule,
@@ -44,6 +49,8 @@ export function RoutesTab({
   const [managedSchedules, setManagedSchedules] = useState(routeSchedules);
   const [managedTrips, setManagedTrips] = useState(trips);
   const [isCreateRouteOpen, setIsCreateRouteOpen] = useState(false);
+  const [editingRoute, setEditingRoute] = useState<DashboardRoute | null>(null);
+  const [deletingRoute, setDeletingRoute] = useState<DashboardRoute | null>(null);
   const [formScheduleId, setFormScheduleId] = useState<string | null>(null);
   const [form, setForm] = useState<NewTripForm>({
     capacity: "",
@@ -52,7 +59,6 @@ export function RoutesTab({
     notes: "",
   });
   const [isSaving, setIsSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     setManagedTrips(trips);
@@ -114,7 +120,6 @@ export function RoutesTab({
   }, [managedTrips]);
 
   function handleOpenForm(schedule: DashboardRouteSchedule) {
-    setMessage(null);
     setFormScheduleId(schedule.id);
     setForm({
       capacity: String(schedule.defaultCapacity),
@@ -124,14 +129,54 @@ export function RoutesTab({
     });
   }
 
-  function handleRouteCreated(route: Route, schedules: RouteSchedule[]) {
+  async function handleRouteCreated(route: Route, schedules: RouteSchedule[]) {
     setManagedRoutes((currentRoutes) => [...currentRoutes, route]);
     setManagedSchedules((currentSchedules) => [
       ...currentSchedules,
       ...schedules,
     ]);
     setExpandedRouteId(route.id);
-    setMessage("Rota criada com sucesso.");
+    const refreshedTrips = await listActiveTrips(token).catch(() => null);
+
+    if (refreshedTrips) {
+      setManagedTrips(refreshedTrips);
+    }
+
+    toast({
+      description: "Viagens futuras geradas automaticamente.",
+      title: "Rota criada",
+    });
+  }
+
+  function handleRouteUpdated(updatedRoute: Route) {
+    setManagedRoutes((currentRoutes) =>
+      currentRoutes.map((route) =>
+        route.id === updatedRoute.id
+          ? { ...route, destination: updatedRoute.destination }
+          : route,
+        ),
+    );
+    toast({
+      title: "Rota atualizada",
+    });
+  }
+
+  function handleRouteDeleted(deletedRoute: Pick<Route, "id">) {
+    setManagedRoutes((currentRoutes) =>
+      currentRoutes.filter((route) => route.id !== deletedRoute.id),
+    );
+    setManagedSchedules((currentSchedules) =>
+      currentSchedules.filter((schedule) => schedule.routeId !== deletedRoute.id),
+    );
+    setManagedTrips((currentTrips) =>
+      currentTrips.filter((trip) => trip.routeId !== deletedRoute.id),
+    );
+    setExpandedRouteId((currentRouteId) =>
+      currentRouteId === deletedRoute.id ? "" : currentRouteId,
+    );
+    toast({
+      title: "Rota excluida",
+    });
   }
 
   async function handleCreateTrip(
@@ -139,12 +184,14 @@ export function RoutesTab({
     schedule: DashboardRouteSchedule,
   ) {
     if (!form.departureDate) {
-      setMessage("Informe a data da viagem.");
+      toast({
+        title: "Informe a data da viagem",
+        variant: "destructive",
+      });
       return;
     }
 
     setIsSaving(true);
-    setMessage(null);
 
     const payload: CreateTripInput = {
       departureDate: form.departureDate,
@@ -169,13 +216,18 @@ export function RoutesTab({
       const createdTrip = await createTrip(token, payload);
       setManagedTrips((currentTrips) => [...currentTrips, createdTrip]);
       setFormScheduleId(null);
-      setMessage("Viagem criada com sucesso.");
+      toast({
+        title: "Viagem criada",
+      });
     } catch (error) {
-      setMessage(
-        error instanceof Error
-          ? error.message
-          : "Nao foi possivel criar a viagem.",
-      );
+      toast({
+        description:
+          error instanceof Error
+            ? error.message
+            : "Nao foi possivel criar a viagem.",
+        title: "Erro ao criar viagem",
+        variant: "destructive",
+      });
     } finally {
       setIsSaving(false);
     }
@@ -199,7 +251,6 @@ export function RoutesTab({
             <button
               className="rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
               onClick={() => {
-                setMessage(null);
                 setIsCreateRouteOpen(true);
               }}
               type="button"
@@ -221,10 +272,22 @@ export function RoutesTab({
         />
       ) : null}
 
-      {message ? (
-        <p className="mt-4 rounded-2xl border border-border bg-muted/50 px-4 py-3 text-sm font-medium text-foreground">
-          {message}
-        </p>
+      {editingRoute ? (
+        <EditRouteDialog
+          onClose={() => setEditingRoute(null)}
+          onSaved={handleRouteUpdated}
+          route={editingRoute}
+          token={token}
+        />
+      ) : null}
+
+      {deletingRoute ? (
+        <DeleteRouteDialog
+          onClose={() => setDeletingRoute(null)}
+          onDeleted={handleRouteDeleted}
+          route={deletingRoute}
+          token={token}
+        />
       ) : null}
 
       <div className="mt-6 space-y-3">
@@ -267,6 +330,30 @@ export function RoutesTab({
                   </span>
                 </span>
                 <span className="flex items-center gap-3 text-sm font-semibold text-muted-foreground">
+                  {role === "COORDINATOR" ? (
+                    <>
+                      <button
+                      className="rounded-md border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground transition hover:bg-accent"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setEditingRoute(route);
+                      }}
+                        type="button"
+                      >
+                        Editar rota
+                      </button>
+                      <button
+                      className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs font-semibold text-destructive transition hover:bg-destructive/15"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setDeletingRoute(route);
+                      }}
+                        type="button"
+                      >
+                        Excluir rota
+                      </button>
+                    </>
+                  ) : null}
                   {upcomingTripsCount} proxima
                   {upcomingTripsCount === 1 ? "" : "s"}
                   <span aria-hidden="true">{isExpanded ? "^" : "v"}</span>
@@ -430,7 +517,12 @@ export function RoutesTab({
                                     key={trip.id}
                                   >
                                     <td className="px-4 py-3 font-medium">
-                                      {trip.name}
+                                      <Link
+                                        className="transition hover:text-primary"
+                                        href={`/trips/${trip.id}`}
+                                      >
+                                        {trip.name}
+                                      </Link>
                                     </td>
                                     <td className="px-4 py-3">
                                       {formatDate(trip.departureDate)}

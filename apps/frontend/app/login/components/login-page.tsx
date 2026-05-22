@@ -3,8 +3,8 @@
 import type { FormEvent } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { saveAccessToken } from "../lib/auth-session";
-import { apiUrl, login } from "../lib/tfd-api";
+import { saveAccessToken } from "../../lib/auth-session";
+import { apiUrl, login } from "../../lib/tfd-api";
 import { LoginView } from "./login-view";
 
 export function LoginPage() {

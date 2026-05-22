@@ -8,6 +8,7 @@ import type { CreateRouteScheduleDto } from "./dto/create-route-schedule.dto";
 import type { ListRouteSchedulesDto } from "./dto/list-route-schedules.dto";
 import type { UpdateRouteScheduleDto } from "./dto/update-route-schedule.dto";
 import { RouteScheduleEntity } from "./domain/route-schedule.entity";
+import { TripsService } from "../trips/trips.service";
 import type {
   RouteSchedule,
   RouteScheduleID,
@@ -19,6 +20,8 @@ export class RouteSchedulesService {
   constructor(
     @Inject(RouteSchedulesRepository)
     private readonly routeSchedulesRepository: RouteSchedulesRepository,
+    @Inject(TripsService)
+    private readonly tripsService: TripsService,
   ) {}
 
   async create(data: CreateRouteScheduleDto): Promise<RouteSchedule> {
@@ -40,6 +43,8 @@ export class RouteSchedulesService {
     if (!schedule) {
       throw new Error("Route schedule could not be created");
     }
+
+    await this.tripsService.generateUpcomingTripsForSchedule(schedule, route);
 
     return schedule;
   }
@@ -70,11 +75,35 @@ export class RouteSchedulesService {
   ): Promise<RouteSchedule> {
     assertUuid(id, "Route schedule id");
 
-    const schedule = await this.routeSchedulesRepository.update(id, data);
+    const currentSchedule = await this.routeSchedulesRepository.findById(id);
+
+    if (!currentSchedule) {
+      throw new NotFoundException("Route schedule not found");
+    }
+
+    const scheduleEntity = RouteScheduleEntity.create({
+      ...currentSchedule,
+      ...data,
+    });
+
+    const schedule = await this.routeSchedulesRepository.update(
+      id,
+      scheduleEntity.toObject(),
+    );
 
     if (!schedule) {
       throw new NotFoundException("Route schedule not found");
     }
+
+    const route = await this.routeSchedulesRepository.findRouteById(
+      schedule.routeId,
+    );
+
+    if (!route) {
+      throw new NotFoundException("Route not found");
+    }
+
+    await this.tripsService.generateUpcomingTripsForSchedule(schedule, route);
 
     return schedule;
   }

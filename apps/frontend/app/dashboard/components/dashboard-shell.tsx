@@ -1,7 +1,8 @@
 import type { AuthenticatedUser } from "../../lib/tfd-api";
+import { Button } from "@/components/ui/button";
+import { roleLabels } from "../../lib/role-labels";
 import {
   dashboardTabs,
-  roleLabels,
   type DashboardTab,
   type RoleHome,
 } from "./dashboard-config";
@@ -53,13 +54,9 @@ export function DashboardShell({
                 </span>
               </span>
             </div>
-            <button
-              className="h-10 rounded-lg border border-border bg-background px-4 text-sm font-semibold transition hover:bg-accent hover:text-accent-foreground"
-              onClick={onSignOut}
-              type="button"
-            >
+            <Button onClick={onSignOut} type="button" variant="outline">
               Sair
-            </button>
+            </Button>
           </div>
         </div>
       </header>

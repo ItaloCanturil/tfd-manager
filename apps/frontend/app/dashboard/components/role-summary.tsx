@@ -1,5 +1,6 @@
 import type { UserRole } from "../../lib/tfd-api";
-import { roleLabels, type RoleHome } from "./dashboard-config";
+import { roleLabels } from "../../lib/role-labels";
+import type { RoleHome } from "./dashboard-config";
 
 export function RoleSummary({
   home,

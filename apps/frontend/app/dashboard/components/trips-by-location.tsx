@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Booking, Patient } from "../../lib/tfd-api";
 import type { DashboardTrip } from "./dashboard-config";
 
@@ -93,7 +94,12 @@ export function TripsByLocation({
               >
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold">{trip.name}</h3>
+                    <Link
+                      className="text-lg font-semibold transition hover:text-primary"
+                      href={`/trips/${trip.id}`}
+                    >
+                      {trip.name}
+                    </Link>
                     <p className="mt-1 text-sm text-muted-foreground">
                       Saida em {formatDate(trip.departureDate)}
                     </p>

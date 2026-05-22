@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { DATABASE } from "../../db/db.constants";
 import type { Database } from "../../db/db.type";
-import { routes } from "../../db/schema";
+import { routeSchedules, routes, trips } from "../../db/schema";
 import type { ListRoutesDto } from "./dto/list-routes.dto";
 import type { NewRoute, Route, RouteID, UpdateRoute } from "./routes.type";
 
@@ -46,5 +46,26 @@ export class RoutesRepository {
       .returning();
 
     return route;
+  }
+
+  async delete(id: RouteID): Promise<Route | undefined> {
+    return this.db.transaction(async (tx) => {
+      await tx.execute(sql`
+        delete from bookings
+        using trips
+        where bookings.trip_id = trips.id
+          and trips.route_id = ${id}
+      `);
+
+      await tx.delete(trips).where(eq(trips.routeId, id));
+      await tx.delete(routeSchedules).where(eq(routeSchedules.routeId, id));
+
+      const [route] = await tx
+        .delete(routes)
+        .where(eq(routes.id, id))
+        .returning();
+
+      return route;
+    });
   }
 }

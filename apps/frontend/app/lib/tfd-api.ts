@@ -98,6 +98,10 @@ export type CreateRouteInput = {
   destination: string;
 };
 
+export type UpdateRouteInput = {
+  destination: string;
+};
+
 export type CreateRouteScheduleInput = {
   defaultCapacity: number;
   departureTime: string;
@@ -218,6 +222,17 @@ export async function listBookingsByAppointment(
   return readJson<Booking[]>(response);
 }
 
+export async function listBookingsByTrip(token: string, tripId: string) {
+  const params = new URLSearchParams({ tripId });
+  const response = await fetch(`${apiUrl}/bookings?${params.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return readJson<Booking[]>(response);
+}
+
 export async function createBooking(
   token: string,
   booking: CreateBookingInput,
@@ -243,6 +258,16 @@ export async function listActiveTrips(token: string) {
   });
 
   return readJson<Trip[]>(response);
+}
+
+export async function getTripById(token: string, id: string) {
+  const response = await fetch(`${apiUrl}/trips/${encodeURIComponent(id)}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return readJson<Trip>(response);
 }
 
 export async function listRoutes(token: string) {
@@ -286,6 +311,34 @@ export async function createRoute(token: string, route: CreateRouteInput) {
       "Content-Type": "application/json",
     },
     method: "POST",
+  });
+
+  return readJson<Route>(response);
+}
+
+export async function updateRoute(
+  token: string,
+  id: string,
+  route: UpdateRouteInput,
+) {
+  const response = await fetch(`${apiUrl}/routes/${id}`, {
+    body: JSON.stringify(route),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    method: "PATCH",
+  });
+
+  return readJson<Route>(response);
+}
+
+export async function deleteRoute(token: string, id: string) {
+  const response = await fetch(`${apiUrl}/routes/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: "DELETE",
   });
 
   return readJson<Route>(response);

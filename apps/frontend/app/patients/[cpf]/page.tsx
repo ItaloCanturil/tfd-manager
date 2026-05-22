@@ -1,4 +1,4 @@
-import { PatientDetailsPage } from "../../components/patient-details-page";
+import { PatientDetailsPage } from "../components/patient-details-page";
 
 export default async function Page({
   params,

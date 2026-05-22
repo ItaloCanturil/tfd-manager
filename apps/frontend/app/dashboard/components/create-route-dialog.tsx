@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { toast } from "@/hooks/use-toast";
 import {
   createRoute,
   createRouteSchedule,
@@ -10,7 +11,10 @@ import {
 
 type CreateRouteDialogProps = {
   onClose: () => void;
-  onCreated: (route: Route, schedules: RouteSchedule[]) => void;
+  onCreated: (
+    route: Route,
+    schedules: RouteSchedule[],
+  ) => Promise<void> | void;
   token: string;
 };
 
@@ -56,7 +60,6 @@ export function CreateRouteDialog({
   token,
 }: CreateRouteDialogProps) {
   const [form, setForm] = useState<RouteForm>(emptyRouteForm);
-  const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   function updateSchedule(
@@ -118,17 +121,22 @@ export function CreateRouteDialog({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setError("");
 
     const destination = form.destination.trim();
 
     if (!destination) {
-      setError("Informe o destino da rota.");
+      toast({
+        title: "Informe o destino da rota",
+        variant: "destructive",
+      });
       return;
     }
 
     if (form.schedules.length === 0) {
-      setError("Adicione pelo menos uma saida recorrente.");
+      toast({
+        title: "Adicione pelo menos uma saida recorrente",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -136,22 +144,34 @@ export function CreateRouteDialog({
       const defaultCapacity = Number(schedule.defaultCapacity);
 
       if (!schedule.label.trim()) {
-        setError("Informe o nome de todas as saidas.");
+        toast({
+          title: "Informe o nome de todas as saidas",
+          variant: "destructive",
+        });
         return;
       }
 
       if (!schedule.departureTime) {
-        setError("Informe o horario de todas as saidas.");
+        toast({
+          title: "Informe o horario de todas as saidas",
+          variant: "destructive",
+        });
         return;
       }
 
       if (!Number.isInteger(defaultCapacity) || defaultCapacity <= 0) {
-        setError("Informe uma capacidade padrao valida para todas as saidas.");
+        toast({
+          title: "Informe uma capacidade padrao valida para todas as saidas",
+          variant: "destructive",
+        });
         return;
       }
 
       if (schedule.weekdays.length === 0) {
-        setError("Selecione pelo menos um dia para cada saida.");
+        toast({
+          title: "Selecione pelo menos um dia para cada saida",
+          variant: "destructive",
+        });
         return;
       }
     }
@@ -172,14 +192,17 @@ export function CreateRouteDialog({
         ),
       );
 
-      onCreated(route, schedules);
+      await onCreated(route, schedules);
       onClose();
     } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Nao foi possivel criar a rota.",
-      );
+      toast({
+        description:
+          submitError instanceof Error
+            ? submitError.message
+            : "Nao foi possivel criar a rota.",
+        title: "Erro ao criar rota",
+        variant: "destructive",
+      });
     } finally {
       setIsSaving(false);
     }
@@ -333,8 +356,6 @@ export function CreateRouteDialog({
               </div>
             ))}
           </div>
-
-          {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
 
           <div className="mt-6 flex justify-end gap-3">
             <button
