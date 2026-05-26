@@ -11,8 +11,7 @@
     "check-types": "tsc --noEmit -p tsconfig.json",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio",
-    "trips:generate": "node scripts/create-trips-from-routes.mjs"
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",
@@ -20,8 +19,8 @@
     "@nestjs/core": "^11.0.0",
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/platform-express": "^11.0.0",
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.15.1",
+    "@nestjs/platform-socket.io": "^11.1.24",
+    "@nestjs/websockets": "^11.1.24",
     "drizzle-orm": "^0.38.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
