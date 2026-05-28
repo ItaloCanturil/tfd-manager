@@ -9,6 +9,7 @@ import { ReportsModule } from "./modules/reports/reports.module";
 import { RouteSchedulesModule } from "./modules/route-schedules/route-schedules.module";
 import { RoutesModule } from "./modules/routes/routes.module";
 import { TripsModule } from "./modules/trips/trips.module";
+import { QueueModule } from "./queue/queue.module";
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { TripsModule } from "./modules/trips/trips.module";
     TripsModule,
     BookingsModule,
     ReportsModule,
+    QueueModule,
   ],
   controllers: [AppController],
 })

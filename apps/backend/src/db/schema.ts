@@ -9,6 +9,7 @@ import {
   time,
   timestamp,
   uuid,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 export const tripStatus = pgEnum("trip_status", ["ACTIVE", "CANCELED"]);
@@ -128,3 +129,75 @@ export const users = pgTable("users", {
   isActive: boolean("is_active").notNull().default(true),
   ...timestamps,
 });
+
+export const tickets = pgTable(
+  "tickets",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    code: text("code").notNull(),
+    status: text("status").notNull(),
+    serviceId: uuid("service_id").notNull(),
+    roomId: uuid("room_id"),
+    patientId: uuid("patient_id").references(() => patients.id, {
+      onDelete: "restrict",
+    }),
+    issuedAt: timestamp("issued_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    ...timestamps,
+  },
+  (table) => [
+    uniqueIndex("tickets_code_unique").on(table.code),
+    index("tickets_service_status_issued_idx").on(
+      table.serviceId,
+      table.status,
+      table.issuedAt,
+    ),
+    index("tickets_room_idx").on(table.roomId),
+    index("tickets_patient_idx").on(table.patientId),
+  ],
+);
+
+export const ticketCalls = pgTable(
+  "ticket_calls",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    ticketId: uuid("ticket_id")
+      .notNull()
+      .references(() => tickets.id, { onDelete: "cascade" }),
+    callNumber: integer("call_number").notNull(),
+    roomId: uuid("room_id").notNull(),
+    calledByUserId: uuid("called_by_user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "restrict" }),
+    calledAt: timestamp("called_at", { withTimezone: true }).notNull(),
+    ...timestamps,
+  },
+  (table) => [
+    index("ticket_calls_ticket_idx").on(table.ticketId),
+    index("ticket_calls_room_idx").on(table.roomId),
+    index("ticket_calls_called_by_user_idx").on(table.calledByUserId),
+    uniqueIndex("ticket_calls_ticket_call_number_unique").on(
+      table.ticketId,
+      table.callNumber,
+    ),
+  ],
+);
+
+export const ticketDailyCounters = pgTable(
+  "ticket_daily_counters",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    serviceId: uuid("service_id").notNull(),
+    counterDate: date("counter_date").notNull(),
+    lastNumber: integer("last_number").notNull(),
+    ...timestamps,
+  },
+  (table) => [
+    uniqueIndex("ticket_daily_counters_service_date_unique").on(
+      table.serviceId,
+      table.counterDate,
+    ),
+    index("ticket_daily_counters_date_idx").on(table.counterDate),
+  ],
+);
